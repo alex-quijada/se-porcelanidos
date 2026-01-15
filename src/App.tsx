@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { Quiz } from './components/Quiz';
 import { Results } from './components/Results';
 import { InfoSection } from './components/InfoSection';
+import { Footer } from './components/Footer';
 // @ts-ignore: módulo de imagen de Figma sin declaraciones de tipo
 import porcelainCrabBg from 'figma:asset/8e4e354dea92540e23d4ff457368ea3333d15dfe.png';
 
@@ -136,6 +137,7 @@ export default function App() {
           />
         )}
       </main>
+      <Footer />
     </div>
   );
 }
