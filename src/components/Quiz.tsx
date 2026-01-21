@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { CheckCircle2, XCircle, Shell } from 'lucide-react';
+import { BadgeCheck, Shell, Badge, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+
 
 interface QuizProps {
   question: {
     question: string;
     correctAnswer: boolean;
     explanation: string;
+    options: string[];
+    imgOpcion1: string;
+    imgOpcion2: string;
   };
   questionNumber: number;
   totalQuestions: number;
   onAnswer: (answer: boolean) => void;
 }
+
 
 export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: QuizProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
@@ -21,13 +26,22 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
   const handleAnswer = (answer: boolean) => {
     setSelectedAnswer(answer);
     setShowExplanation(true);
-    
+
+
+
     setTimeout(() => {
       onAnswer(answer);
       setSelectedAnswer(null);
       setShowExplanation(false);
     }, 3000);
   };
+
+
+  // 2. Guardar el nuevo valor en el array de estado
+  //    Crea una nueva copia del array añadiendo el valor.
+
+  // Opcional: Lógica para avanzar al siguiente elemento del quiz...
+
 
   const isCorrect = selectedAnswer === question.correctAnswer;
 
@@ -45,11 +59,11 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
         <motion.div
           className="bg-gradient-to-r from-teal-500 via-cyan-400 to-blue-500 h-full"
           initial={{ width: 0 }}
-          animate={{ 
+          animate={{
             width: `${(questionNumber / totalQuestions) * 100}%`,
             backgroundPosition: ['0% 0%', '100% 0%']
           }}
-          transition={{ 
+          transition={{
             width: { duration: 0.5 },
             backgroundPosition: { duration: 2, repeat: Infinity }
           }}
@@ -60,7 +74,7 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
       <div className="p-10">
         {/* Question counter */}
         <div className="flex items-center justify-between mb-8">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-teal-800 text-lg px-4 py-2 bg-cyan-50 rounded-full border-2 border-teal-200"
@@ -76,7 +90,7 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
         </div>
 
         {/* Question text */}
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -103,7 +117,7 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
               ${selectedAnswer === null
                 ? 'hover:shadow-2xl'
                 : selectedAnswer === true
-                  ? isCorrect 
+                  ? isCorrect
                     ? 'shadow-2xl ring-4 ring-green-400'
                     : 'shadow-2xl ring-4 ring-red-400'
                   : 'opacity-50'
@@ -115,33 +129,17 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
               {/* Imagen en la parte superior */}
               <div className="relative h-48 overflow-hidden rounded-t-3xl">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1580841129862-bc2a2d113c45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3JjZWxhaW4lMjBjcmFiJTIwY2xvc2V1cHxlbnwxfHx8fDE3NjM5MDE1NzV8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                  src={question.imgOpcion1}
                   alt="Porcelánido - Sí"
                   className="w-full h-full object-cover"
                 />
                 {/* Overlay de color */}
-                <div className={`absolute inset-0 transition-all duration-300 ${
-                  selectedAnswer === null 
-                    ? 'bg-green-500/30' 
-                    : selectedAnswer === true && isCorrect
-                      ? 'bg-green-500/50'
-                      : selectedAnswer === true && !isCorrect
-                        ? 'bg-red-500/50'
-                        : 'bg-gray-500/30'
-                }`} />
+
               </div>
 
               {/* Contenido del botón */}
               <div className={`
-                py-8 px-6 flex flex-col items-center gap-4 relative
-                ${selectedAnswer === null
-                  ? 'bg-gradient-to-br from-green-500 to-green-600 text-white'
-                  : selectedAnswer === true
-                    ? isCorrect 
-                      ? 'bg-green-500 text-white animate-pulse'
-                      : 'bg-red-500 text-white'
-                    : 'bg-gray-300 text-gray-500'
-                }
+                py-8 px-6 flex flex-col items-center gap-4 relative bg-gradient-to-br from-teal-500 to-teal-600 text-white
               `}>
                 {/* Efecto de brillo */}
                 {selectedAnswer === null && (
@@ -151,8 +149,19 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
                 )}
-                <CheckCircle2 className="w-12 h-12 relative z-10" />
-                <span className="text-2xl relative z-10">SÍ</span>
+                {/* Icono de estado basado en la respuesta seleccionada */}
+                {selectedAnswer === null ? (
+                  // Si no se ha seleccionado, muestra un icono por defecto (o null para que no se vea)
+                  <Badge className="w-12 h-12 relative z-10" />
+                ) : selectedAnswer === true ? (
+                  // Si la respuesta seleccionada es CORRECTA (asumiendo true = correcto)
+                  <BadgeCheck className="w-12 h-12 relative z-10 text-green-500" />
+                ) : (
+                  // Si la respuesta seleccionada es INCORRECTA (asumiendo false = incorrecto)
+                  <Badge className="w-12 h-12 relative z-10 text-red-500" />
+                )}
+
+                <span className="text-2xl relative z-10">{question.options[0]}</span>
               </div>
             </div>
           </motion.button>
@@ -171,7 +180,7 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
               ${selectedAnswer === null
                 ? 'hover:shadow-2xl'
                 : selectedAnswer === false
-                  ? isCorrect 
+                  ? isCorrect
                     ? 'shadow-2xl ring-4 ring-green-400'
                     : 'shadow-2xl ring-4 ring-red-400'
                   : 'opacity-50'
@@ -183,33 +192,18 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
               {/* Imagen en la parte superior */}
               <div className="relative h-48 overflow-hidden rounded-t-3xl">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1642702022200-98bc1289e380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcmFiJTIwb2NlYW4lMjB1bmRlcndhdGVyfGVufDF8fHx8MTc2MzkwMDkwMnww&ixlib=rb-4.1.0&q=80&w=1080"
+                  src={question.imgOpcion2}
                   alt="Crustáceo - No"
                   className="w-full h-full object-cover"
                 />
                 {/* Overlay de color */}
-                <div className={`absolute inset-0 transition-all duration-300 ${
-                  selectedAnswer === null 
-                    ? 'bg-red-500/30' 
-                    : selectedAnswer === false && isCorrect
-                      ? 'bg-green-500/50'
-                      : selectedAnswer === false && !isCorrect
-                        ? 'bg-red-500/50'
-                        : 'bg-gray-500/30'
-                }`} />
+
               </div>
 
               {/* Contenido del botón */}
               <div className={`
-                py-8 px-6 flex flex-col items-center gap-4 relative
-                ${selectedAnswer === null
-                  ? 'bg-gradient-to-br from-red-500 to-red-600 text-white'
-                  : selectedAnswer === false
-                    ? isCorrect 
-                      ? 'bg-green-500 text-white animate-pulse'
-                      : 'bg-red-500 text-white'
-                    : 'bg-gray-300 text-gray-500'
-                }
+                py-8 px-6 flex flex-col items-center gap-4 relative bg-gradient-to-br from-teal-500 to-teal-600 text-white
+                
               `}>
                 {/* Efecto de brillo */}
                 {selectedAnswer === null && (
@@ -219,8 +213,17 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
                 )}
-                <XCircle className="w-12 h-12 relative z-10" />
-                <span className="text-2xl relative z-10">NO</span>
+                {selectedAnswer === null ? (
+                  // Si no se ha seleccionado, muestra un icono por defecto (o null para que no se vea)
+                  <Badge className="w-12 h-12 relative z-10" />
+                ) : selectedAnswer === false ? (
+                  // Si la respuesta seleccionada es CORRECTA (asumiendo true = correcto)
+                  <BadgeCheck className="w-12 h-12 relative z-10 text-green-500" />
+                ) : (
+                  // Si la respuesta seleccionada es INCORRECTA (asumiendo false = incorrecto)
+                  <Badge className="w-12 h-12 relative z-10 text-red-500" />
+                )}
+                <span className="text-2xl relative z-10">{question.options[1]}</span>
               </div>
             </div>
           </motion.button>
@@ -234,8 +237,8 @@ export function Quiz({ question, questionNumber, totalQuestions, onAnswer }: Qui
             transition={{ type: "spring" }}
             className={`
               p-6 rounded-2xl text-center relative overflow-hidden
-              ${isCorrect 
-                ? 'bg-green-50 border-2 border-green-400' 
+              ${isCorrect
+                ? 'bg-green-50 border-2 border-green-400'
                 : 'bg-red-50 border-2 border-red-400'
               }
             `}

@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Trophy, RotateCcw, Award, Shell, BookOpen } from 'lucide-react';
 
 interface ResultsProps {
+  resultado: string;
   score: number;
   totalQuestions: number;
   questions: Array<{
@@ -13,7 +14,7 @@ interface ResultsProps {
   onRestart: () => void;
 }
 
-export function Results({ score, totalQuestions, questions, answers, onRestart }: ResultsProps) {
+export function Results({ resultado, score, totalQuestions, questions, answers, onRestart }: ResultsProps) {
   const percentage = (score / totalQuestions) * 100;
 
   const getResultMessage = () => {
@@ -67,7 +68,7 @@ export function Results({ score, totalQuestions, questions, answers, onRestart }
           >
             <ResultIcon className="w-32 h-32 drop-shadow-2xl" />
           </motion.div>
-          <h2 className="text-5xl mb-4 drop-shadow-lg">{result.title}</h2>
+          <h2 className="text-5xl mb-4 drop-shadow-lg">{resultado}</h2>
         </div>
       </div>
 
@@ -98,14 +99,14 @@ export function Results({ score, totalQuestions, questions, answers, onRestart }
             {questions.map((q, index) => {
               const userAnswer = answers[index];
               const isCorrect = userAnswer === q.correctAnswer;
-              
+
               return (
                 <div
                   key={index}
                   className={`
                     p-5 rounded-2xl border-2
-                    ${isCorrect 
-                      ? 'bg-green-50 border-green-300' 
+                    ${isCorrect
+                      ? 'bg-green-50 border-green-300'
                       : 'bg-red-50 border-red-300'
                     }
                   `}
@@ -119,7 +120,7 @@ export function Results({ score, totalQuestions, questions, answers, onRestart }
                         <strong>Pregunta {index + 1}:</strong> {q.question}
                       </p>
                       <p className="text-sm text-gray-600 mb-1">
-                        Tu respuesta: <strong>{userAnswer ? 'SÍ' : 'NO'}</strong> 
+                        Tu respuesta: <strong>{userAnswer ? 'SÍ' : 'NO'}</strong>
                         {!isCorrect && ` | Correcta: ${q.correctAnswer ? 'SÍ' : 'NO'}`}
                       </p>
                       <p className="text-sm text-gray-700 italic">

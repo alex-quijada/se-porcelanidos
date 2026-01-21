@@ -5,16 +5,16 @@ export function Header() {
   return (
     <header className="relative bg-gradient-to-r from-teal-500 via-cyan-400 to-blue-400 text-white py-12 shadow-xl overflow-hidden">
       {/* Imagen de fondo con opacidad */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center opacity-15"
         style={{
           backgroundImage: `url(${porcelainCrabBg})`,
         }}
       />
-      
+
       {/* Overlay con gradiente caribeño */}
       <div className="absolute inset-0 bg-gradient-to-b from-teal-600/40 via-cyan-500/40 to-blue-500/40" />
-      
+
       {/* Contenido del header */}
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="flex items-center justify-center gap-4 mb-4">
